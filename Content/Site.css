@@ -1,0 +1,239 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.navbar-inverse .navbar-toggle:hover,
+.navbar-inverse .navbar-toggle:focus {
+    background-color: #777;
+    border-color: #fff
+}
+
+.survey-index-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+.survey-index-container {
+    width: 100%;
+    height: 10rem;
+    border: 1px solid black;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    line-height: 2;
+}
+
+.survey-index-container div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.survey-index-container div > span:last-child {
+    font-weight: 700;
+}
+
+.survey-details-container {
+    width: 100%;
+    height: auto;
+}
+
+.survey-details-container {
+    width: 100%;
+    height: auto;
+    margin-top: 3rem;
+}
+
+.survey-details-container > .qa-wrapper {
+    margin-bottom: 2rem;
+}
+
+
+/*
+    Survey Create
+*/
+
+.survey-create-general {
+    display: flex;
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+.survey-create-general > .form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.survey-create-general > .form-group:last-child {
+    margin-left: 5rem;
+}
+
+.qa-wrapper > .question {
+    margin-bottom: 0.5rem;
+}
+
+.qa-wrapper > .choices {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 30rem;
+}
+
+.choices span {
+    margin-right: 1rem;
+}
+
+.add-choice {
+    margin-top: 1rem;
+}
+
+.survey-create-questionnaire {
+    border: 1px solid black;
+    border-radius: 0.75rem;
+    padding-top: 1rem;
+}
+
+.button-panel {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 3rem;
+}
+
+.button-panel > .form-group:last-child {
+    margin-left: 2rem;
+}
+
+
+/*
+    Automation - Create
+*/
+
+.form-horizontal .control-label {
+    text-align: left;
+}
+
+.automation-create-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.automation-create-container {
+    display: flex;
+}
+
+.automation-create-panel-left, .automation-create-panel-right {
+    width: 50%;
+}
+
+.automation-create-container + .form-group > div {
+    margin-left: 0;
+}
+
+.automation-create-container + form-group:last-child {
+    align-self: flex-end;
+}
+
+.automation-index-automation-type {
+    width: 30%;
+}
+
+
+/*
+    Model Dialog Box
+*/
+.model-backdrop {
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: none;
+}
+
+.model-content {
+    position: relative;
+    width: 50rem;
+    height: auto;
+    background-color: #fff;
+    margin: calc(100vh / 4) auto;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    z-index: 10;
+}
+
+.model-content > .model-fieldset {
+    border: 1px solid #c0c0c0;
+    padding: 0.35em 0.625em 0.75em;
+}
+
+.model-fieldset > .model-legend {
+    font-size: 1.5rem;
+    border: none;
+    width: inherit;
+}
+
+div.model-backdrop > div > fieldset:nth-child(3) > div {
+    display: flex;
+    padding: 0 3rem;
+}
+
+.model-fieldset .model-recurrence-pattern-radio {
+    display: flex;
+    flex-direction: column;
+    width: 25%;
+}
+
+.model-recurrence-pattern-radio + .model-recurrence-pattern-weekdays {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 70%;
+    padding-left: 2rem;
+    border-left: 2px solid #ccc;
+}
+
+.btn-close {
+    border: 1px solid #999;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    position: absolute;
+    background-color: #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: red;
+    top: -10px;
+    right: -10px;
+    cursor: pointer;
+    font-weight: 700;
+}

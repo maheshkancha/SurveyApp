@@ -1,0 +1,47 @@
+﻿@using SurveyApp.Models;
+@model IEnumerable<SurveyViewModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@Styles.Render("~/Content/Site.css")
+
+<div class="survey-index-header">
+    <h2>Surveys</h2>
+    @Html.ActionLink("Create Survey", "Create", null, new { @class = "btn btn-primary" })
+</div>
+
+<hr />
+
+@foreach (var item in Model) {
+    <div class="survey-index-container">
+        <div>
+            <span>@item.SurveyID</span>
+            <span>Survey ID</span>
+        </div>
+        <div>
+            <span>@item.Category</span>
+            <span>Category</span>
+        </div>
+        <div>
+            <span>@item.Status</span>
+            <span>Status</span>
+        </div>
+        <div>
+            <span>@item.CreatedOn</span>
+            <span>Created On</span>
+        </div>
+        <div>
+            <span>@item.UpdatedOn</span>
+            <span>Updated On</span>
+        </div>
+        <div>
+            <span>
+                @Html.ActionLink("👁", "Details", "Survey", new { id = item.SurveyID }, null)
+                @Html.ActionLink("🗑", "Details", "Survey", new { id = item.SurveyID }, null)
+            </span>
+            <span>Action</span>
+        </div>
+    </div>
+}

@@ -1,0 +1,65 @@
+﻿@using SurveyApp.Models
+@model SurveyViewModel
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@Model.Category</h2>
+
+<h3>@Model.Description</h3>
+
+<div class="survey-details-container">
+    @foreach (var qna in Model.SurveyQnA.questionnaire)
+    {
+        <div class="qa-wrapper">
+            <div class="question">@qna.question</div>
+            <div class="choices">
+                @if (qna.choiceType == "simpletext")
+                {
+                    <input type="text" name="choice" placeholder="Type your answer" />
+                }
+                else if (qna.choiceType == "radio")
+                {
+                    foreach (var choice in qna.choices)
+                    {
+                        <span><input type="radio" name="choice" /> @choice </span>
+                    }
+                }
+                else if (qna.choiceType == "multiple")
+                {
+                    foreach (var choice in qna.choices)
+                    {
+                        <span><input type="checkbox" name="choice" /> @choice </span>
+                    }
+                }
+                else if (qna.choiceType == "range")
+                {
+                    string max = "";
+                    foreach (var choice in qna.choices)
+                    {
+                        max = choice;
+                    }
+
+                    List<string> choices = new List<string>();
+                    int counter = 1;
+
+                    while (counter <= Convert.ToInt32(max))
+                    {
+                        choices.Add(counter.ToString());
+                        counter++;
+                    }
+
+                    foreach (var choice in choices)
+                    {
+                        <button type="button" name="choice" class="btn btn-secondary">@choice</button>
+                    }
+                }
+            </div>
+        </div>
+    }
+    <div>
+        @Html.ActionLink("Submit", "Details", null, new { @class = "btn btn-primary" } )
+    </div>
+</div>

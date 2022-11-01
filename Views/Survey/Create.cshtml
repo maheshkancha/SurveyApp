@@ -1,0 +1,130 @@
+﻿@using SurveyApp.Models
+@model CreateSurveyViewModel
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Styles.Render("~/Content/Site.css")
+
+<script type="text/javascript" async>
+    global.selectedChoiceType = "";
+    let counter = 2;
+
+    function addAnotherQuestion() {
+        const questionEl = document.querySelector('#Question');
+        const choiceEl = document.querySelector('#Choices');
+
+        questionEl.value = "";
+        choiceEl.value = "";
+    }
+
+    function addAnotherChoice() {
+        const choicePanel = document.querySelector('.choice-panel');
+        const parentDiv = document.createElement('div');
+        const labelEl = document.createElement('label');
+        labelEl.innerHTML = " ";
+        labelEl.className = "control-label col-md-2"
+
+        const controlDiv = document.createElement('div');
+        controlDiv.className = "col-md-10";
+        const inputEl = document.createElement('input');
+        inputEl.type = "text";
+        inputEl.name = "Choice" + counter;
+        inputEl.id = "Choice" + counter;
+        inputEl.className = "form-control text-box single-line";
+        controlDiv.appendChild(inputEl);
+
+        parentDiv.appendChild(labelEl);
+        parentDiv.appendChild(controlDiv);
+
+        choicePanel.appendChild(parentDiv);
+
+        counter++;
+    }
+
+    const choiceTypeDDL = document.querySelector('select');
+    choiceTypeDDL?.addEventListener('change', (e) => {
+        selectedChoiceType = e.target.value;
+    });
+</script>
+
+<h2>Create Survey Questions</h2>
+
+@using (Html.BeginForm())
+{
+    <div class="form-horizontal">
+        <hr />
+        <div class="survey-create-general">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Category, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @if (!string.IsNullOrEmpty(ViewBag.Category))
+                    {
+                        <input type="text" name="Category" class="form-control" value="@ViewBag.Category" disabled />
+                    }
+                    else
+                    {
+                        @Html.EditorFor(model => model.Category, new { htmlAttributes = new { @class = "form-control" } })
+                    }
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @if (!string.IsNullOrEmpty(ViewBag.Description))
+                    {
+                        <textarea name="Description" id="Description" cols="100" rows="5" disabled>@ViewBag.Description</textarea>
+                    }
+                    else
+                    {
+                        <textarea name="Description" id="Description" cols="100" rows="5"></textarea>
+                    }
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="survey-create-questionnaire">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Question, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.Editor("Question", new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ChoiceType, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("ChoiceType", null, new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Choices, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Choices, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+            </div>
+        </div>
+
+        <div class="button-panel">
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input id="addQuestion" type="submit" name="AddQuestion" value="Add Another Question" class="btn btn-success" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" name="CreateQuestion" value="Create" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
