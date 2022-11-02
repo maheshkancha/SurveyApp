@@ -13,21 +13,51 @@
         document.forms[0].submit();
     }
 
-    function GetRadioValue(event) {
-        console.log('====', event);
-    }
-
     function GetAutomationTypeID() {
         const selectedID = $('select[name="AutomationTypesVB"]').find('option:selected').val();
         $("#hfAutomationTypeID").val(selectedID);
 
+        let selectedPattern = '';
+
+        function radioChangeHandler(event) {
+            // Hide previous selected Pattern Panel
+            const allPatternPanels = document.querySelectorAll('.pattern-panel');
+            for (const panel of allPatternPanels) {
+                panel.style.setProperty('display', 'none');
+            }
+
+            // Displaying currently selected radio element panel
+            selectedPattern = event.target.value;
+
+            const panelToDisplay = document.querySelector(`.${selectedPattern}`);
+            panelToDisplay.style.setProperty('display', 'flex');
+        }
+
         if (selectedID === "2") {
             const modelDialog = document.querySelector('.model-backdrop');
             modelDialog.style.setProperty('display', 'block');
+
+            const weeklyRadioEl = document.getElementById('weekly');
+            weeklyRadioEl.checked = true;
+
+            const weeklyPanelEl = document.querySelector('.weekly');
+            weeklyPanelEl.style.setProperty('display', 'flex');
+
+            const radioList = document.querySelectorAll('input[name="pattern"]');
+
+            for (const radio of radioList) {
+                radio.addEventListener('change', radioChangeHandler)
+            }
         }
     }
 
     function CloseModel(event) {
+        // Cleanup before closing model
+        const allPatternPanels = document.querySelectorAll('.pattern-panel');
+        for (const panel of allPatternPanels) {
+            panel.style.setProperty('display', 'none');
+        }
+
         const modelDialog = document.querySelector('.model-backdrop');
         modelDialog.style.setProperty('display', 'none');
     }
@@ -112,12 +142,21 @@
                     </legend>
                     <div class="form-group">
                         <div class="model-recurrence-pattern-radio">
-                            <span><input type="radio" name="pattern" /> Daily</span>
-                            <span><input type="radio" name="pattern" /> Weekly</span>
-                            <span><input type="radio" name="pattern" /> Monthly</span>
-                            <span><input type="radio" name="pattern" /> Yearly</span>
+                            <span><input type="radio" name="pattern" id="daily" value="daily" /> Daily</span>
+                            <span><input type="radio" name="pattern" id="weekly" value="weekly" /> Weekly</span>
+                            <span><input type="radio" name="pattern" id="monthly" value="monthly" /> Monthly</span>
+                            <span><input type="radio" name="pattern" id="yearly" value="yearly" /> Yearly</span>
                         </div>
-                        <div class="model-recurrence-pattern-weekdays">
+                        <div class="pattern-panel daily">
+                            <div>
+                                <span><input type="radio" name="daily-option" value="everynday" checked="checked" /> Every</span>
+                                <input type="number" value="1" name="everyndayvalue" /> day(s)
+                            </div>
+                            <span>
+                                <input type="radio" name="daily-option" value="everyweekday" /> Every weekday
+                            </span>
+                        </div>
+                        <div class="pattern-panel weekly">
                             <span><input type="checkbox" name="weekdays" /> Sunday</span>
                             <span><input type="checkbox" name="weekdays" /> Monday</span>
                             <span><input type="checkbox" name="weekdays" /> Tuesday</span>
@@ -125,6 +164,90 @@
                             <span><input type="checkbox" name="weekdays" /> Thursday</span>
                             <span><input type="checkbox" name="weekdays" /> Friday</span>
                             <span><input type="checkbox" name="weekdays" /> Saturday</span>
+                        </div>
+                        <div class="pattern-panel monthly">
+                            <div>
+                                <span><input type="radio" name="monthly-option" checked="checked" /> Day</span>
+                                <input type="number" value="2" name="monthly-day-value" />
+                                <span> of every </span>
+                                <input type="number" value="1" name="monthly-month-option1-value" />
+                                <span> month(s)</span>
+                            </div>
+                            <div>
+                                <span><input type="radio" name="monthly-option" /></span> The
+                                <select disabled>
+                                    <option value="first" selected>first</option>
+                                    <option value="second">second</option>
+                                    <option value="third">third</option>
+                                    <option value="last">last</option>
+                                </select>
+                                <select disabled>
+                                    <option value="monday" selected>Monday</option>
+                                    <option value="tuesday">Tuesday</option>
+                                    <option value="wednesday">Wednesday</option>
+                                    <option value="thursday">Thursday</option>
+                                    <option value="friday">Friday</option>
+                                </select>
+                                <span> of every </span>
+                                <input type="number" value="1" name="monthly-month-option2-value" disabled />
+                                <span> month(s)</span>
+                            </div>
+                        </div>
+                        <div class="pattern-panel yearly">
+                            <div>
+                                <span>Recur every </span>
+                                <input type="number" value="1" name="yearly-option1-value" />
+                                <span> year(s)</span>
+                            </div>
+                            <div>
+                                <span><input type="radio" name="yearly-option" checked="checked" /></span> On:
+                                <select>
+                                    <option value="january" selected>January</option>
+                                    <option value="february">February</option>
+                                    <option value="march">March</option>
+                                    <option value="april">April</option>
+                                    <option value="may">May</option>
+                                    <option value="june">June</option>
+                                    <option value="july">July</option>
+                                    <option value="august">August</option>
+                                    <option value="september">September</option>
+                                    <option value="october">October</option>
+                                    <option value="november">November</option>
+                                    <option value="december">December</option>
+                                </select>
+                                <input type="number" value="1" name="yearly-option2-value" />
+                            </div>
+                            <div>
+                                <span><input type="radio" name="yearly-option" /></span> On the:
+                                <select disabled>
+                                    <option value="first" selected>first</option>
+                                    <option value="second">second</option>
+                                    <option value="third">third</option>
+                                    <option value="last">last</option>
+                                </select>
+                                <select disabled>
+                                    <option value="monday" selected>Monday</option>
+                                    <option value="tuesday">Tuesday</option>
+                                    <option value="wednesday">Wednesday</option>
+                                    <option value="thursday">Thursday</option>
+                                    <option value="friday">Friday</option>
+                                </select>
+                                <span> of </span>
+                                <select disabled>
+                                    <option value="january" selected>January</option>
+                                    <option value="february">February</option>
+                                    <option value="march">March</option>
+                                    <option value="april">April</option>
+                                    <option value="may">May</option>
+                                    <option value="june">June</option>
+                                    <option value="july">July</option>
+                                    <option value="august">August</option>
+                                    <option value="september">September</option>
+                                    <option value="october">October</option>
+                                    <option value="november">November</option>
+                                    <option value="december">December</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </fieldset>

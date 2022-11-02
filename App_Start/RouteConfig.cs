@@ -16,7 +16,7 @@ namespace SurveyApp
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Automation", action = "Create", id = UrlParameter.Optional }
+                defaults: new { controller = "Automation", action = "Index", id = UrlParameter.Optional }
             );
         }
     }

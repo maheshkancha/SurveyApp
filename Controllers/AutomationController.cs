@@ -63,37 +63,44 @@ namespace SurveyApp.Controllers
         [ActionName("Index")]
         public ActionResult Index_Post(string SelectedAutomationID, string SelectedAutomationTypeID, string Initiate)
         {
-            AutomationRepository repository = new AutomationRepository();
-            List<SelectListItem> updatedListItem = new List<SelectListItem>();
-
-            foreach (SelectListItem item in GetSelectListItems())
+            if (SelectedAutomationID != "")
             {
-                item.Selected = item.Value == SelectedAutomationID ? true : false;
+                AutomationRepository repository = new AutomationRepository();
+                List<SelectListItem> updatedListItem = new List<SelectListItem>();
 
-                updatedListItem.Add(item);
-            }
+                foreach (SelectListItem item in GetSelectListItems())
+                {
+                    item.Selected = item.Value == SelectedAutomationID ? true : false;
 
-            ViewBag.ProcessNames = updatedListItem;
-            ViewBag.AutomationTypesVB = GetAutomationTypes();
+                    updatedListItem.Add(item);
+                }
 
-            if (Initiate == null)
-            {
-                Automation automation = repository.GetAutomationDetailsByID(Convert.ToInt32(SelectedAutomationID));
+                ViewBag.ProcessNames = updatedListItem;
+                ViewBag.AutomationTypesVB = GetAutomationTypes();
 
-                return View(automation);
+                if (Initiate == null)
+                {
+                    Automation automation = repository.GetAutomationDetailsByID(Convert.ToInt32(SelectedAutomationID));
+
+                    return View(automation);
+                }
+                else
+                {
+                    if (ModelState.IsValid)
+                    {
+                        Automation automationData = new Automation();
+                        automationData.AutomationID = Convert.ToInt32(SelectedAutomationID);
+                        automationData.AutomationType = Convert.ToInt32(SelectedAutomationTypeID);
+
+                        UpdateModel<Automation>(automationData);
+                        repository.UpdateAutomationDetails(automationData);
+
+                        return RedirectToAction("Create", "Automation");
+                    }
+                }
             } else
             {
-                if (ModelState.IsValid)
-                {
-                    Automation automationData = new Automation();
-                    automationData.AutomationID = Convert.ToInt32(SelectedAutomationID);
-                    automationData.AutomationType = Convert.ToInt32(SelectedAutomationTypeID);
-
-                    UpdateModel<Automation>(automationData);
-                    repository.UpdateAutomationDetails(automationData);
-
-                    return RedirectToAction("Create", "Automation");
-                }
+                return RedirectToAction("Index");
             }
 
             return View();

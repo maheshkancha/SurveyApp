@@ -212,8 +212,8 @@ div.model-backdrop > div > fieldset:nth-child(3) > div {
     width: 25%;
 }
 
-.model-recurrence-pattern-radio + .model-recurrence-pattern-weekdays {
-    display: flex;
+.pattern-panel {
+    display: none;
     flex-wrap: wrap;
     justify-content: space-between;
     width: 70%;
@@ -236,4 +236,43 @@ div.model-backdrop > div > fieldset:nth-child(3) > div {
     right: -10px;
     cursor: pointer;
     font-weight: 700;
+}
+
+.daily, .monthly, .yearly {
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.daily > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 15rem;
+}
+
+.daily div:nth-child(1) input[type="number"], .monthly div input[type="number"], .yearly div input[type="number"] {
+    width: 3rem;
+}
+
+.monthly div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+ {
+    width: 3rem;
+}
+
+.monthly div select, .yearly div select {
+    width: 8rem;
+}
+
+.monthly > div:nth-child(1) {
+    width: 25rem;
+}
+
+.monthly > div:nth-child(2) {
+    width: 30rem;
 }
