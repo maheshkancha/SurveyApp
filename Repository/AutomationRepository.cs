@@ -50,7 +50,6 @@ namespace SurveyApp.Repository
         private List<Automation> GetAutomationsList()
         {
             List<Automation> automations = new List<Automation>();
-           
 
             using (SurveyDBContext context = new SurveyDBContext())
             {
@@ -70,6 +69,53 @@ namespace SurveyApp.Repository
             }
 
             return automationType;
+        }
+    
+        private List<EmployeeManagerViewModel> GetEmployeeManagerDetails()
+        {
+            List<EmployeeManagerViewModel> employeeViewModels = new List<EmployeeManagerViewModel>();
+
+            using(SurveyDBContext context = new SurveyDBContext())
+            {
+                employeeViewModels = context.Database.SqlQuery<EmployeeManagerViewModel>("EXECUTE sp_GetEmployeeManagerDetails").ToList();
+            }
+
+            return employeeViewModels;
+        }
+
+        public List<Managers> GetManagers()
+        {
+            List<Managers> managers = new List<Managers>();
+            
+            foreach(EmployeeManagerViewModel managervm in GetEmployeeManagerDetails())
+            {
+                if (!managers.Exists(m => m.ManagerID == managervm.ManagerID))
+                {
+                    Managers manager = new Managers();
+                    manager.ManagerID = managervm.ManagerID;
+                    manager.ManagerName = managervm.ManagerName;
+                    manager.ManagerEmailID = managervm.ManagerEmailID;
+
+                    managers.Add(manager);
+                }
+            }
+
+            return managers;
+        }
+
+        public List<EmployeeManagerViewModel> GetEmployees(int managerID)
+        {
+            List<EmployeeManagerViewModel> employees = new List<EmployeeManagerViewModel>();
+            
+            foreach(EmployeeManagerViewModel employee in GetEmployeeManagerDetails())
+            {
+                if(employee.ManagerID == managerID)
+                {
+                    employees.Add(employee);
+                }
+            }
+
+            return employees;
         }
     }
 }

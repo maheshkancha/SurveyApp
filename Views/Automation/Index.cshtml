@@ -6,9 +6,19 @@
 }
 
 <script type="text/javascript">
+    var ddlManagerEl, ddlEmployeesEl;
+    // hideManagersDDL = hideEmployeesDDL = true;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        ddlManagerEl = document.querySelector('select[name="Managers"]');
+        ddlEmployeesEl = document.querySelector('select[name = "Employees"]');
+    });
+
     function GetAutomationID() {
         const selectedID = $('select[name="ProcessNames"]').find('option:selected').val();
         $("#hfAutomationID").val(selectedID);
+
+        // ddlManagerEl.style.setProperty('display', 'block');
 
         document.forms[0].submit();
     }
@@ -61,16 +71,34 @@
         const modelDialog = document.querySelector('.model-backdrop');
         modelDialog.style.setProperty('display', 'none');
     }
+    
+    function GetManagerID() {
+        const selectedID = $('select[name="Managers"]').find('option:selected').val();
+        $("#hfManagerID").val(selectedID);
+
+        // ddlEmployeesEl.style.setProperty('display', 'block');
+
+        document.forms[0].submit();
+    }
+
+    function GetEmployeesID() {
+        const selectedID = $('select[name="Employees"]').find('option:selected').val();
+        console.log('=== Selected Employees ===', selectedID);
+        $("#hfEmployeesID").val(selectedID);
+    }
 </script>
 
 @using (Html.BeginForm()) 
 {
     @Html.AntiForgeryToken()
     
-    <div class="form-horizontal">
-        <h2>Initiate Automation Job</h2>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+<div class="form-horizontal">
+    <h2>Initiate Automation Job</h2>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="main-section">
+        <div class="left-section">
         <div class="form-group">
             @Html.LabelFor(model => model.ProcessName, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -117,7 +145,7 @@
                 <div class="btn-close" onclick="CloseModel()">X</div>
                 <fieldset class="model-fieldset">
                     <legend class="model-legend">
-                        Range of Recurrence
+                        Automation Job Recurrence
                     </legend>
                     <div class="form-group">
                         @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -128,17 +156,17 @@
                     </div>
 
                     <div class="form-group">
-                        @Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
-                            @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control", type = "date" } })
-                            @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+                        <div>
+                            <span>Number of </span>
+                            <input type="number" value="1" name="everyndayvalue" />
+                            <span> cycle(s)</span>
                         </div>
                     </div>
                 </fieldset>
 
                 <fieldset class="model-fieldset">
                     <legend class="model-legend">
-                        Recurrence Pattern
+                        Job Recurrence Pattern
                     </legend>
                     <div class="form-group">
                         <div class="model-recurrence-pattern-radio">
@@ -157,13 +185,13 @@
                             </span>
                         </div>
                         <div class="pattern-panel weekly">
-                            <span><input type="checkbox" name="weekdays" /> Sunday</span>
-                            <span><input type="checkbox" name="weekdays" /> Monday</span>
-                            <span><input type="checkbox" name="weekdays" /> Tuesday</span>
-                            <span><input type="checkbox" name="weekdays" /> Wednesday</span>
-                            <span><input type="checkbox" name="weekdays" /> Thursday</span>
-                            <span><input type="checkbox" name="weekdays" /> Friday</span>
-                            <span><input type="checkbox" name="weekdays" /> Saturday</span>
+                            <span><input type="checkbox" name="weeklydays" /> Sunday</span>
+                            <span><input type="checkbox" name="weeklydays" /> Monday</span>
+                            <span><input type="checkbox" name="weeklydays" /> Tuesday</span>
+                            <span><input type="checkbox" name="weeklydays" /> Wednesday</span>
+                            <span><input type="checkbox" name="weeklydays" /> Thursday</span>
+                            <span><input type="checkbox" name="weeklydays" /> Friday</span>
+                            <span><input type="checkbox" name="weeklydays" /> Saturday</span>
                         </div>
                         <div class="pattern-panel monthly">
                             <div>
@@ -251,6 +279,19 @@
                         </div>
                     </div>
                 </fieldset>
+
+                <fieldset class="model-fieldset">
+                    <legend class="model-legend">
+                        Range of Recurrence
+                    </legend>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control", type = "date" } })
+                            @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </fieldset>
             </div>
         </div>
 
@@ -259,7 +300,35 @@
                 <input name="Initiate" type="submit" value="Initiate Job" class="btn btn-primary" />
             </div>
         </div>
+        </div>
+        <div class="right-section">
+            <div class="form-group">
+                @Html.Label("Select Manager", htmlAttributes: new { @class = "control-label col-md-2" })
+                @if (ViewBag.DisableManagerDDL == true)
+                {
+                    @Html.DropDownList("Managers", null, "Select Manager", new { @class = "form-control", onchange = "GetManagerID()", disabled = true })
+                }
+                else
+                {
+                    @Html.DropDownList("Managers", null, "Select Manager", new { @class = "form-control", onchange = "GetManagerID()" })
+                }
+                @Html.Hidden("SelectedManagerID", null, new { @id = "hfManagerID" })
+            </div>
+            <div class="form-group">
+                @Html.Label("Select Reportees (press Ctrl / Shift for  multiple selection)", htmlAttributes: new { @class = "control-label col-md-2" })
+                @if (ViewBag.DisableEmployeeDDL == true)
+                {
+                    @Html.DropDownList("Employees", null, "Select Employees", new { @class = "form-control", onchange = "GetEmployeesID()", disabled = true })
+                }
+                else
+                {
+                    @Html.DropDownList("Employees", null, null, new { @class = "form-control", onchange = "GetEmployeesID()", multiple = true })
+                }
+                @Html.Hidden("SelectedEmployeesID", null, new { @id = "hfEmployeesID" })
+            </div>
+        </div>
     </div>
+</div>
 }
 
 <div>

@@ -12,5 +12,7 @@ namespace SurveyApp.Models
         public DbSet<ChoiceTypes> ChoiceTypes { get; set; }
         public DbSet<Automation> Automations { get; set; }
         public DbSet<AutomationType> AutomationTypes { get; set; }
+        public DbSet<Employees> Employees { get; set; }
+        public DbSet<EmployeeManagerViewModel> EmployeeManager  { get; set; }
     }
 }

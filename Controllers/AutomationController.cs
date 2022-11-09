@@ -17,52 +17,19 @@ namespace SurveyApp.Controllers
         {
             ViewBag.ProcessNames = GetSelectListItems();
             ViewBag.AutomationTypesVB = GetAutomationTypes();
+            ViewBag.Managers = GetManagerList();
+            ViewBag.DisableManagerDDL = true;
+            ViewBag.DisableEmployeeDDL = true;
+            ViewBag.Employees = new List<SelectListItem>() { new SelectListItem() { Text = "", Value = "" } };
 
             return View();
         }
 
-        private List<SelectListItem> GetSelectListItems()
-        {
-            AutomationRepository repository = new AutomationRepository();
-            List<SelectListItem> itemList = new List<SelectListItem>();
-
-            foreach (Automation aut in repository.GetAutomationDetails())
-            {
-                SelectListItem item = new SelectListItem()
-                {
-                    Text = aut.ProcessName,
-                    Value = aut.AutomationID.ToString()
-                };
-
-                itemList.Add(item);
-            }
-
-            return itemList;
-        }
-
-        private List<SelectListItem> GetAutomationTypes()
-        {
-            AutomationRepository repository = new AutomationRepository();
-            List<SelectListItem> selectListItems = new List<SelectListItem>();
-
-            foreach(AutomationType autType in repository.GetAutomationTypes())
-            {
-                SelectListItem item = new SelectListItem()
-                {
-                    Text = autType.AutomationTypeDescription,
-                    Value = autType.AutomationTypeID.ToString()
-                };
-
-                selectListItems.Add(item);
-            }
-
-            return selectListItems;
-        }
-
         [HttpPost]
         [ActionName("Index")]
-        public ActionResult Index_Post(string SelectedAutomationID, string SelectedAutomationTypeID, string Initiate)
+        public ActionResult Index_Post(string SelectedAutomationID, string SelectedAutomationTypeID, string Initiate, string SelectedManagerID)
         {
+            // RecurrencePatternData(pattern, weeklydays);
             if (SelectedAutomationID != "")
             {
                 AutomationRepository repository = new AutomationRepository();
@@ -75,12 +42,31 @@ namespace SurveyApp.Controllers
                     updatedListItem.Add(item);
                 }
 
+                ViewBag.Managers = GetManagerList();
                 ViewBag.ProcessNames = updatedListItem;
                 ViewBag.AutomationTypesVB = GetAutomationTypes();
+                ViewBag.Employees = new List<SelectListItem>() { new SelectListItem() { Text = "", Value = "" } };
+                ViewBag.DisableEmployeeDDL = true;
 
                 if (Initiate == null)
                 {
+                    ViewBag.DisableManagerDDL = false;
                     Automation automation = repository.GetAutomationDetailsByID(Convert.ToInt32(SelectedAutomationID));
+
+                    if (SelectedManagerID != "")
+                    {
+                        ViewBag.DisableEmployeeDDL = false;
+                        List<SelectListItem> mgrList = new List<SelectListItem>();
+
+                        foreach(SelectListItem item in GetManagerList())
+                        {
+                            item.Selected = item.Value == SelectedManagerID ? true : false;
+                            mgrList.Add(item);
+                        }
+
+                        ViewBag.Managers = mgrList;
+                        ViewBag.Employees = GetEmployeeList(Convert.ToInt32(SelectedManagerID));
+                    }
 
                     return View(automation);
                 }
@@ -152,6 +138,91 @@ namespace SurveyApp.Controllers
             string formattedDate = $"{year}-{month}-{date}";
 
             return DateTime.Parse(formattedDate);
+        }
+
+        private List<SelectListItem> GetSelectListItems()
+        {
+            AutomationRepository repository = new AutomationRepository();
+            List<SelectListItem> itemList = new List<SelectListItem>();
+
+            foreach (Automation aut in repository.GetAutomationDetails())
+            {
+                SelectListItem item = new SelectListItem()
+                {
+                    Text = aut.ProcessName,
+                    Value = aut.AutomationID.ToString()
+                };
+
+                itemList.Add(item);
+            }
+
+            return itemList;
+        }
+
+        private List<SelectListItem> GetAutomationTypes()
+        {
+            AutomationRepository repository = new AutomationRepository();
+            List<SelectListItem> selectListItems = new List<SelectListItem>();
+
+            foreach (AutomationType autType in repository.GetAutomationTypes())
+            {
+                SelectListItem item = new SelectListItem()
+                {
+                    Text = autType.AutomationTypeDescription,
+                    Value = autType.AutomationTypeID.ToString()
+                };
+
+                selectListItems.Add(item);
+            }
+
+            return selectListItems;
+        }
+
+        private List<SelectListItem> GetManagerList()
+        {
+            List<SelectListItem> managerList = new List<SelectListItem>();
+            AutomationRepository repo = new AutomationRepository();
+            foreach(Managers manager in repo.GetManagers())
+            {
+                SelectListItem listItem = new SelectListItem();
+
+                listItem.Text = $"{manager.ManagerName} ({manager.ManagerEmailID})";
+                listItem.Value = manager.ManagerID.ToString();
+
+                managerList.Add(listItem);
+            }
+
+            return managerList;
+        }
+
+        private List<SelectListItem> GetEmployeeList(int managerID)
+        {
+            AutomationRepository repo = new AutomationRepository();
+            List<SelectListItem> listItem = new List<SelectListItem>();
+
+            foreach (EmployeeManagerViewModel emvm in repo.GetEmployees(managerID)) {
+                SelectListItem item = new SelectListItem();
+                item.Text = $"{emvm.EmployeeName} ({emvm.EmployeeEmailID})";
+                item.Value = emvm.EmployeeID.ToString();
+
+                listItem.Add(item);
+            }
+
+            return listItem;
+        }
+        private void RecurrencePatternData(string pattern, string weeklydays)
+        {
+            switch (pattern)
+            {
+                case "daily": 
+                    break;
+                case "monthly":
+                    break;
+                case "yearly":
+                    break;
+                default: String selectedDays = weeklydays;
+                    break;
+            }
         }
     }
 }
